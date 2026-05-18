@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+version = '1.0'
+group = 'com.kamesuta'
+archivesBaseName = 'HQM-UTF8-Patch'
+
+minecraft {
+    version = '10.13.4.1448-1.7.10'
+    runDir = 'eclipse'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.ow2.asm:asm:5.0.3'
+    compile 'org.ow2.asm:asm-tree:5.0.3'
+}
+
+jar {
+    manifest {
+        attributes(
+            'FMLCorePlugin': 'com.kamesuta.hqmutf8patch.HQMUtf8Coremod',
+            'FMLCorePluginContainsFMLMod': 'true',
+            'ForceLoadAsMod': 'true'
+        )
+    }
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.info'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.info'
+        expand version: project.version, mcversion: project.minecraft.version
+    }
+}
+
+tasks.build.dependsOn jar
